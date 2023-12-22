@@ -1,0 +1,4 @@
+[submodule "third-party/repo-scripts"]
+	path = third-party/repo-scripts
+	url = https://github.com/xbmc/repo-scripts.git
+	branch = matrix
