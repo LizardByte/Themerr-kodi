@@ -6,7 +6,7 @@ on:
     branches: [master]
     paths:  # prevents workflow from running unless these files change
       - '.github/workflows/localize.yml'
-      - 'locale/themerr-jellyfin.po'
+      - 'locale/themerr-kodi.po'
       - 'src/**.py'
   workflow_dispatch:
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: Update Strings
         run: |
-          python ./scripts/_locale.py --extract
+          python -m scripts.locale.py --extract
 
       - name: git diff
         run: |
@@ -60,7 +60,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           add-paths: |
-            Contents/Strings/*.po
+            locale/*.po
           token: ${{ secrets.GH_BOT_TOKEN }}  # must trigger PR tests
           commit-message: New localization template
           branch: localize/update
