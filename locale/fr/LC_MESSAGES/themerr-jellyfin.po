@@ -1,0 +1,56 @@
+# French translations for Themerr-jellyfin.
+# Copyright (C) 2023 Themerr-jellyfin
+# This file is distributed under the same license as the Themerr-jellyfin
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Themerr-jellyfin v0\n"
+"Report-Msgid-Bugs-To: github.com/themerr-jellyfin\n"
+"POT-Creation-Date: 2023-12-28 18:51-0500\n"
+"PO-Revision-Date: 2023-12-28 18:51-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+#: src/themerr/locale.py:42
+msgctxt "addon.extension.description"
+msgid "Plugin for Kodi that adds theme songs to movies using ThemerrDB."
+msgstr ""
+
+#: src/themerr/locale.py:45
+msgctxt "addon.extension.summary"
+msgid "Play theme songs while browsing movies"
+msgstr ""
+
+#: src/themerr/locale.py:72
+msgctxt "#31001"
+msgid "General"
+msgstr ""
+
+#: src/themerr/locale.py:73
+msgctxt "#31002"
+msgid "Theme timeout"
+msgstr ""
+
+#: src/themerr/locale.py:74
+msgctxt "#31003"
+msgid "Time to wait before playing or switching themes (in seconds)"
+msgstr ""
+
+#: src/themerr/locale.py:75
+msgctxt "#31004"
+msgid "Dev mode"
+msgstr ""
+
+#: src/themerr/locale.py:76
+msgctxt "#31005"
+msgid "Display log messages in Kodi's notification area"
+msgstr ""
+

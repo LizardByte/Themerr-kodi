@@ -1,0 +1,36 @@
+addon:
+  id: "service.themerr"
+  name: "Themerr"
+  version: "0.0.1"
+  provider-name: "LizardByte"
+  extension:
+    - point: "xbmc.service"
+      library: "service.py"
+    - point: "xbmc.python.module"
+      library: "resources/lib"
+    - point: "xbmc.addon.metadata"
+      assets:
+        clearlogo: "resources/assets/images/clearlogo.png"
+        icon: "resources/assets/images/icon.png"
+        fanart: "resources/assets/images/fanart.jpg"
+        screenshot:
+          - "resources/assets/images/screenshot-01.jpg"
+          - "resources/assets/images/screenshot-02.jpg"
+          - "resources/assets/images/screenshot-03.jpg"
+        banner: "resources/assets/images/banner.jpg"
+      description:
+        lang: "en"
+        text: "Plugin for Kodi that adds theme songs to movies using ThemerrDB."
+      license: "AGPL-3.0-only"
+      platform: "all"
+      source: "https://github.com/LizardByte/Themerr-jellyfin"
+      summary:
+        lang: "en"
+        text: "Play theme songs while browsing movies"
+      website: "https://app.lizardbyte.dev/"
+  requires:
+    import:
+      - addon: "xbmc.python"
+        version: "3.0.1"
+      - addon: "script.module.requests"
+      - addon: "script.module.youtube.dl"
