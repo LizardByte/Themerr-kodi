@@ -23,7 +23,7 @@ addon:
         text: "Plugin for Kodi that adds theme songs to movies using ThemerrDB."
       license: "AGPL-3.0-only"
       platform: "all"
-      source: "https://github.com/LizardByte/Themerr-jellyfin"
+      source: "https://github.com/LizardByte/Themerr-kodi"
       summary:
         lang: "en"
         text: "Play theme songs while browsing movies"

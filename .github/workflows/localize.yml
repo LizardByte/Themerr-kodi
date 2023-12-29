@@ -41,14 +41,14 @@ jobs:
           git config --global pager.diff false
 
           # print the git diff
-          git diff Contents/Strings/themerr-plex.po
+          git diff locale/themerr-kodi.po
 
           # set the variable with minimal output, replacing `\t` with ` `
-          OUTPUT=$(git diff --numstat Contents/Strings/themerr-plex.po | sed -e "s#\t# #g")
+          OUTPUT=$(git diff --numstat locale/themerr-kodi.po | sed -e "s#\t# #g")
           echo "git_diff=${OUTPUT}" >> $GITHUB_ENV
 
       - name: git reset
-        if: ${{ env.git_diff == '1 1 Contents/Strings/themerr-plex.po' }}  # only run if more than 1 line changed
+        if: ${{ env.git_diff == '1 1 locale/themerr-kodi.po' }}  # only run if more than 1 line changed
         run: |
           git reset --hard
 

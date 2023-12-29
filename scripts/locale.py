@@ -10,7 +10,7 @@ import argparse
 import os
 import subprocess
 
-project_name = 'Themerr-jellyfin'
+project_name = 'Themerr-kodi'
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.dirname(script_dir)
