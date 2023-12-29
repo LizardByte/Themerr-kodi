@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-kodi\n"
 "POT-Creation-Date: 2023-12-28 21:00-0500\n"
-"PO-Revision-Date: 2023-12-29 03:10\n"
+"PO-Revision-Date: 2023-12-29 04:11\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -21,35 +21,35 @@ msgstr ""
 #: src/themerr/locale.py:42
 msgctxt "addon.extension.description"
 msgid "Plugin for Kodi that adds theme songs to movies using ThemerrDB."
-msgstr ""
+msgstr "Plugin pour Kodi qui ajoute des chansons de thème aux films en utilisant ThemerrDB."
 
 #: src/themerr/locale.py:45
 msgctxt "addon.extension.summary"
 msgid "Play theme songs while browsing movies"
-msgstr ""
+msgstr "Jouer des chansons du thème tout en naviguant sur des films"
 
 #: src/themerr/locale.py:72
 msgctxt "#31001"
 msgid "General"
-msgstr ""
+msgstr "Généraux"
 
 #: src/themerr/locale.py:73
 msgctxt "#31002"
 msgid "Theme timeout"
-msgstr ""
+msgstr "Délai d'expiration du thème"
 
 #: src/themerr/locale.py:74
 msgctxt "#31003"
 msgid "Time to wait before playing or switching themes (in seconds)"
-msgstr ""
+msgstr "Temps d'attente avant de jouer ou de changer de thème (en secondes)"
 
 #: src/themerr/locale.py:75
 msgctxt "#31004"
 msgid "Dev mode"
-msgstr ""
+msgstr "Mode Dev"
 
 #: src/themerr/locale.py:76
 msgctxt "#31005"
 msgid "Display log messages in Kodi's notification area"
-msgstr ""
+msgstr "Afficher les messages de log dans la zone de notification de Kodi"
 
