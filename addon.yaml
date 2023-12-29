@@ -33,4 +33,3 @@ addon:
       - addon: "xbmc.python"
         version: "3.0.1"
       - addon: "script.module.requests"
-      - addon: "script.module.youtube.dl"
