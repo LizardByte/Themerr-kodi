@@ -96,7 +96,7 @@ def compile_localizations():
     for item in os.listdir(locale_source_directory):
         if os.path.isdir(os.path.join(locale_source_directory, item)):
             # copy the po file
-            po_source_file: str = os.path.join(locale_source_directory, item, 'LC_MESSAGES', 'themerr-jellyfin.po')
+            po_source_file: str = os.path.join(locale_source_directory, item, 'LC_MESSAGES', 'themerr-kodi.po')
             language = item
             po_dest_directory: str = os.path.join(locale_dest_directory, f'resource.language.{language}')
             po_dest_file: str = os.path.join(po_dest_directory, 'strings.po')
