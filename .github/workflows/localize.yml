@@ -33,7 +33,7 @@ jobs:
 
       - name: Update Strings
         run: |
-          python -m scripts.locale.py --extract
+          python -m scripts.locale --extract
 
       - name: git diff
         run: |
