@@ -2,7 +2,10 @@
 from typing import Optional
 
 # lib imports
-import youtube_dl
+try:
+    from YoutubeDLWrapper import youtube_dl  # importing from wrapper applies kodi patches
+except TypeError:
+    import youtube_dl  # patches fail when building docs
 
 # local imports
 from . import logger
