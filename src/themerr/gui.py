@@ -1,7 +1,7 @@
 # standard imports
 from datetime import datetime
 import json
-from typing import Dict, List, Optional, Set, Union
+from typing import List, Optional, Set, Union
 
 # lib imports
 import requests
@@ -258,54 +258,6 @@ class Window:
             )
 
             return youtube_url
-
-    def _process_movie(self, dbid: int) -> Dict[str, Optional[Union[str, int]]]:
-        """
-        Generate a dictionary of IDs from a given Kodi ID, for a movie.
-
-        This method takes a Kodi ID and returns a dictionary of IDs.
-        This method is no longer used, and may be removed in the future.
-
-        Parameters
-        ----------
-        dbid : int
-            The Kodi DBID to process.
-
-        Returns
-        -------
-        Dict[str, Optional[Union[str, int]]]
-            A dictionary of IDs.
-
-        Examples
-        --------
-        >>> window = Window()
-        >>> window._process_movie(kodi_id=1)
-        {'themoviedb': ..., 'imdb': ...}
-        """
-        # query the kodi database to get tmdb and imdb unique ids
-        rpc_query = {
-            "jsonrpc": "2.0",
-            "method": "VideoLibrary.GetMovieDetails",
-            "params": {
-                "movieid": int(dbid),
-                "properties": [
-                    "imdbnumber",
-                    "uniqueid",
-                ],
-            },
-            "id": "libMovies",
-        }
-        rpc_response = xbmc.executeJSONRPC(json.dumps(rpc_query))
-        json_response = json.loads(rpc_response)
-        self.log.debug(f"JSON response: {json_response}")
-
-        # get the supported ids
-        ids = {
-            'themoviedb': json_response['result']['moviedetails']['uniqueid'].get('tmdb'),
-            'imdb': json_response['result']['moviedetails']['uniqueid'].get('imdb'),
-        }
-        self.log.debug(f"IDs: {ids}")
-        return ids
 
     def find_youtube_url(self, kodi_id: str, db_type: str) -> Optional[str]:
         """
