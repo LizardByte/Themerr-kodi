@@ -3,11 +3,9 @@ import argparse
 import os
 
 # lib imports
+from kodi_addon_checker.check_dependencies import VERSION_ATTRB as xbmc_versions
 from lxml import etree
 import yaml
-
-# constants
-xbmc_python_version = '3.0.1'  # todo: obtain this dynamically
 
 
 def handle_asset_elements(
@@ -37,8 +35,9 @@ def yaml_to_xml_lxml(yaml_file: str) -> str:
             # if the version is specified in yaml, don't look it up
             # this allows pinning a requirement to a specific version
             continue
-        if requirement['addon'] == 'xbmc.python':
-            requirement['version'] = xbmc_python_version
+        if requirement['addon'].startswith('xbmc.'):
+            requirement['version'] = xbmc_versions[requirement['addon']][os.getenv(
+                'KODI_BRANCH', 'Nexus').lower()]['advised']
         elif requirement['addon'].startswith('script.module.'):
             requirement_xml = os.path.join(
                 os.getcwd(), 'third-party', 'repo-scripts', requirement['addon'], 'addon.xml')

@@ -31,7 +31,6 @@ addon:
   requires:
     import:
       - addon: "xbmc.python"
-        version: "3.0.1"
       - addon: "script.module.kodi-six"  # this is a dependency of youtube-dl, but we need to put it here for CI tests
       - addon: "script.module.requests"
       - addon: "script.module.youtube.dl"
