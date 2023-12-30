@@ -11,6 +11,16 @@ import pytest
 from src.themerr import gui
 
 
+@pytest.fixture(
+    scope='function',
+    params=[
+        'tmdb_10378',
+    ],
+)
+def kodi_id(request):
+    return request.param
+
+
 @pytest.fixture(scope='function')
 def window_obj(mock_xbmc_player):
     """Return the Window object with a mocked player"""
@@ -28,7 +38,7 @@ def test_window_init(window_obj):
     assert window_obj.playing_item_not_selected_for == 0
     assert window_obj.current_selected_item_id is None
     assert window_obj.last_selected_item_id is None
-    assert window_obj.kodi_id_mapping == {}
+    assert window_obj.uuid_mapping == {}
 
 
 def test_pre_checks_no_item_playing(window_obj):
@@ -67,13 +77,32 @@ def test_pre_checks_all_passing(window_obj):
     assert window_obj.pre_checks() is True
 
 
-def test_find_youtube_url_from_ids(window_obj):
-    test_ids = {
-        'themoviedb': 10378,  # Big Buck Bunny
-    }
+def test_process_kodi_id_movies(kodi_id, mock_xbmc_get_cond_visibility, window_obj):
+    condition = 'Container.Content(movies)'
+    env_var = f'_KODI_GET_COND_VISIBILITY_{condition}'
+    os.environ[env_var] = '1'
 
-    youtube_url = window_obj.find_youtube_url_from_ids(
-        ids=test_ids,
+    youtube_url = window_obj.process_kodi_id(kodi_id=kodi_id)
+    assert youtube_url
+
+    del os.environ[env_var]
+
+
+def test_process_kodi_id_movie_collection(mock_xbmc_get_cond_visibility, window_obj):
+    _kodi_id = 'tmdb_645'
+    condition = 'ListItem.IsCollection'
+    env_var = f'_KODI_GET_COND_VISIBILITY_{condition}'
+    os.environ[env_var] = '1'
+
+    youtube_url = window_obj.process_kodi_id(kodi_id=_kodi_id)
+    assert youtube_url
+
+    del os.environ[env_var]
+
+
+def test_find_youtube_url(kodi_id, window_obj):
+    youtube_url = window_obj.find_youtube_url(
+        kodi_id=kodi_id,
         db_type='movies',
     )
 
@@ -81,13 +110,12 @@ def test_find_youtube_url_from_ids(window_obj):
     assert youtube_url.startswith('https://')
 
 
-def test_find_youtube_url_from_ids_exception(window_obj):
-    test_ids = {
-        'foo': 0,
-    }
-
-    youtube_url = window_obj.find_youtube_url_from_ids(
-        ids=test_ids,
+@pytest.mark.parametrize('kodi_id_invalid', [
+    'tmdb_0',
+])
+def test_find_youtube_url_exception(window_obj, kodi_id_invalid):
+    youtube_url = window_obj.find_youtube_url(
+        kodi_id=kodi_id_invalid,
         db_type='bar',
     )
 
