@@ -85,7 +85,7 @@ def compile_localizations():
     """
     # kodi using po files for localization, no need to compile to mo
     subprocess.run(
-        args=[sys.executable, '-m', 'scripts.locale', '--update'],
+        args=[sys.executable, '-m', 'scripts.locale', '--update', '--compile'],
     )
 
     # locale directories
