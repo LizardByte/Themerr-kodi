@@ -43,8 +43,10 @@ class Window:
         The current selected item ID.
     last_selected_item_id : Optional[int]
         The last selected item ID.
-    kodi_id_mapping : dict
-        A mapping of Kodi IDs to YouTube URLs. This is used to cache the YouTube URLs for faster lookups.
+    uuid_mapping : dict
+        A mapping of uuids to YouTube URLs.
+        The UUID will be the database type and the database ID, separated by an underscore. e.g. `tmdb_1`
+        This is used to cache the YouTube URLs for faster lookups.
 
     Methods
     -------
@@ -52,11 +54,11 @@ class Window:
         The main method that watches for changes to the Kodi window.
     pre_checks()
         Perform pre-checks before starting/stopping the theme.
-    process_kodi_id(kodi_id: int)
+    process_kodi_id(kodi_id: str)
         Process the Kodi ID and return a YouTube URL.
     process_movie(kodi_id: int)
         Process the Kodi ID and return a dictionary of IDs.
-    find_youtube_url_from_ids(ids: dict, db_type: str)
+    find_youtube_url(kodi_id: str, db_type: str)
         Find the YouTube URL from the IDs.
     any_true(check: Optional[bool] = None, checks: Optional[Union[List[bool], Set[bool]]] = ())
         Determine if the check is True or if any of the checks are True.
@@ -92,7 +94,24 @@ class Window:
         self.playing_item_not_selected_for = 0
         self.current_selected_item_id = None
         self.last_selected_item_id = None
-        self.kodi_id_mapping = {}
+        self.uuid_mapping = {}
+
+        self._kodi_db_map = {
+            'tmdb': 'themoviedb',
+            'imdb': 'imdb',
+        }
+        self._supported_dbs = {
+            'games': ['igdb'],
+            'game_collections': ['igdb'],
+            'game_franchises': ['igdb'],
+            'movies': ['themoviedb', 'imdb'],
+            'movie_collections': ['themoviedb'],
+        }
+        self._dbs = (
+            'tmdb',
+            'imdb',
+            # 'igdb',  # placeholder for video game support
+        )
 
     def window_watcher(self):
         """
@@ -114,14 +133,20 @@ class Window:
             timeout_factor = settings.settings.theme_timeout()
             timeout = timeout_factor * (1000 / sleep_time)
 
-            selected_title = xbmc.getInfoLabel("ListItem.Label")
-            kodi_id = xbmc.getInfoLabel("ListItem.DBID")
-            kodi_id = int(kodi_id) if kodi_id else None
+            selected_title = xbmc.getInfoLabel("ListItem.Label")  # this is only used for logging
+
+            kodi_id = None
+
+            for db in self._dbs:
+                db_id = xbmc.getInfoLabel(f'ListItem.UniqueID({db})')
+                if db_id:
+                    kodi_id = f"{db}_{db_id}"
+                    break  # break on the first supported db
 
             # prefetch the YouTube url (if not already cached or cache is greater than 1 hour)
-            if kodi_id and (kodi_id not in list(self.kodi_id_mapping.keys())
-                            or (datetime.now().timestamp() - self.kodi_id_mapping[kodi_id]['timestamp']) > 3600):
-                self.kodi_id_mapping[kodi_id] = {
+            if kodi_id and (kodi_id not in list(self.uuid_mapping.keys())
+                            or (datetime.now().timestamp() - self.uuid_mapping[kodi_id]['timestamp']) > 3600):
+                self.uuid_mapping[kodi_id] = {
                     'timestamp': datetime.now().timestamp(),
                     'youtube_url': self.process_kodi_id(kodi_id=kodi_id)
                 }
@@ -149,13 +174,13 @@ class Window:
                 else:
                     self.playing_item_not_selected_for = 0
             if not self.player.theme_is_playing and self.item_selected_for >= timeout:
-                if not self.kodi_id_mapping.get(kodi_id):
+                if not self.uuid_mapping.get(kodi_id):
                     continue
-                if not self.kodi_id_mapping[kodi_id].get('youtube_url'):
+                if not self.uuid_mapping[kodi_id].get('youtube_url'):
                     continue
                 self.log.debug(f"Playing theme for {selected_title}, ID: {kodi_id}")
                 self.player.play_url(
-                    url=self.kodi_id_mapping[kodi_id]['youtube_url'],
+                    url=self.uuid_mapping[kodi_id]['youtube_url'],
                     kodi_id=kodi_id,
                 )
 
@@ -199,7 +224,7 @@ class Window:
         self.log.debug("pre-checks passed")
         return True
 
-    def process_kodi_id(self, kodi_id: int) -> Optional[str]:
+    def process_kodi_id(self, kodi_id: str) -> Optional[str]:
         """
         Generate YouTube URL from a given Kodi ID.
 
@@ -207,7 +232,7 @@ class Window:
 
         Parameters
         ----------
-        kodi_id : int
+        kodi_id : str
             The Kodi ID to process.
 
         Returns
@@ -218,34 +243,33 @@ class Window:
         Examples
         --------
         >>> window = Window()
-        >>> window.process_kodi_id(kodi_id=1)
+        >>> window.process_kodi_id(kodi_id='tmdb_1')
         """
-        ids = None
         database_type = None
         if self.is_movies():
-            ids = self.process_movie(kodi_id=kodi_id)
             database_type = 'movies'
         elif self.is_movie_set():
-            database_type = 'movie_sets'
+            database_type = 'movie_collections'
 
-        if ids and database_type:
-            youtube_url = self.find_youtube_url_from_ids(
-                ids=ids,
+        if database_type:
+            youtube_url = self.find_youtube_url(
+                kodi_id=kodi_id,
                 db_type=database_type,
             )
 
             return youtube_url
 
-    def process_movie(self, kodi_id: int) -> Dict[str, Optional[Union[str, int]]]:
+    def _process_movie(self, dbid: int) -> Dict[str, Optional[Union[str, int]]]:
         """
         Generate a dictionary of IDs from a given Kodi ID, for a movie.
 
         This method takes a Kodi ID and returns a dictionary of IDs.
+        This method is no longer used, and may be removed in the future.
 
         Parameters
         ----------
-        kodi_id : int
-            The Kodi ID to process.
+        dbid : int
+            The Kodi DBID to process.
 
         Returns
         -------
@@ -255,7 +279,7 @@ class Window:
         Examples
         --------
         >>> window = Window()
-        >>> window.process_movie(kodi_id=1)
+        >>> window._process_movie(kodi_id=1)
         {'themoviedb': ..., 'imdb': ...}
         """
         # query the kodi database to get tmdb and imdb unique ids
@@ -263,7 +287,7 @@ class Window:
             "jsonrpc": "2.0",
             "method": "VideoLibrary.GetMovieDetails",
             "params": {
-                "movieid": int(kodi_id),
+                "movieid": int(dbid),
                 "properties": [
                     "imdbnumber",
                     "uniqueid",
@@ -275,7 +299,7 @@ class Window:
         json_response = json.loads(rpc_response)
         self.log.debug(f"JSON response: {json_response}")
 
-        # get the supported:
+        # get the supported ids
         ids = {
             'themoviedb': json_response['result']['moviedetails']['uniqueid'].get('tmdb'),
             'imdb': json_response['result']['moviedetails']['uniqueid'].get('imdb'),
@@ -283,7 +307,7 @@ class Window:
         self.log.debug(f"IDs: {ids}")
         return ids
 
-    def find_youtube_url_from_ids(self, ids: Dict[str, Optional[Union[str, int]]], db_type: str) -> Optional[str]:
+    def find_youtube_url(self, kodi_id: str, db_type: str) -> Optional[str]:
         """
         Find YouTube URL from the Dictionary of IDs.
 
@@ -291,8 +315,8 @@ class Window:
 
         Parameters
         ----------
-        ids : Dict[str, Optional[Union[str, int]]]
-            The dictionary of IDs.
+        kodi_id : str
+            The Kodi ID to process.
         db_type : str
             The database type.
 
@@ -304,28 +328,29 @@ class Window:
         Examples
         --------
         >>> window = Window()
-        >>> window.find_youtube_url_from_ids(ids={'themoviedb': 10378}, db_type='movies')
+        >>> window.find_youtube_url(kodi_id='tmdb_1', db_type='movies')
         """
-        for key, value in list(ids.items()):
-            if value is None:
-                continue
-            self.log.debug(f"{key.upper()}_ID: {value}")
-            themerr_db_url = f"https://app.lizardbyte.dev/ThemerrDB/{db_type}/{key}/{value}.json"
-            self.log.debug(f"Themerr DB URL: {themerr_db_url}")
+        split_id = kodi_id.split('_')
+        db = self._kodi_db_map[split_id[0]]
+        db_id = split_id[1]
 
-            try:
-                response_data = requests.get(
-                    url=themerr_db_url,
-                ).json()
-            except requests.exceptions.RequestException as e:
-                self.log.debug(f"Exception getting data from {themerr_db_url}: {e}")
-            except json.decoder.JSONDecodeError:
-                self.log.debug(f"Exception decoding JSON from {themerr_db_url}")
-            else:
-                youtube_theme_url = response_data['youtube_theme_url']
-                self.log.debug(f"Youtube theme URL: {youtube_theme_url}")
+        self.log.debug(f"{db.upper()}_ID: {db_id}")
+        themerr_db_url = f"https://app.lizardbyte.dev/ThemerrDB/{db_type}/{db}/{db_id}.json"
+        self.log.debug(f"Themerr DB URL: {themerr_db_url}")
 
-                return youtube_theme_url
+        try:
+            response_data = requests.get(
+                url=themerr_db_url,
+            ).json()
+        except requests.exceptions.RequestException as e:
+            self.log.debug(f"Exception getting data from {themerr_db_url}: {e}")
+        except json.decoder.JSONDecodeError:
+            self.log.debug(f"Exception decoding JSON from {themerr_db_url}")
+        else:
+            youtube_theme_url = response_data['youtube_theme_url']
+            self.log.debug(f"Youtube theme URL: {youtube_theme_url}")
+
+            return youtube_theme_url
 
     @staticmethod
     def any_true(check: Optional[bool] = None, checks: Optional[Union[List[bool], Set[bool]]] = ()):

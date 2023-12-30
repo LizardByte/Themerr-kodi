@@ -23,7 +23,7 @@ class Player(xbmc.Player):
         True if a theme is currently playing, False otherwise.
     theme_is_playing_for : int
         The number of seconds the theme has been playing for.
-    theme_playing_kodi_id : Optional[int]
+    theme_playing_kodi_id : Optional[str]
         The Kodi ID of the theme currently playing.
     theme_playing_url : Optional[str]
         The URL of the theme currently playing.
@@ -32,7 +32,7 @@ class Player(xbmc.Player):
     -------
     ytdl_extract_url(url: str) -> Optional[str]
         Extract the audio URL from a YouTube URL.
-    play_url(url: str, kodi_id: int, windowed: bool = False)
+    play_url(url: str, kodi_id: str, windowed: bool = False)
         Play a YouTube URL.
     stop()
         Stop playback.
@@ -59,7 +59,7 @@ class Player(xbmc.Player):
     def play_url(
             self,
             url: str,
-            kodi_id: int,
+            kodi_id: str,
             windowed: bool = False,
     ):
         """
@@ -71,7 +71,7 @@ class Player(xbmc.Player):
         ----------
         url : str
             The url to play.
-        kodi_id : int
+        kodi_id : str
             The Kodi ID of the item.
         windowed : bool
             True to play in a window, False otherwise.
@@ -79,7 +79,7 @@ class Player(xbmc.Player):
         Examples
         --------
         >>> player = Player()
-        >>> player.play_url(url="https://www.youtube.com/watch?v=dQw4w9WgXcQ", kodi_id=1)
+        >>> player.play_url(url="https://www.youtube.com/watch?v=dQw4w9WgXcQ", kodi_id='tmdb_1')
         """
         playable_url = self.ytdl_extract_url(url=url)
         if playable_url:
