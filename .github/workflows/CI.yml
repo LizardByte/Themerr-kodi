@@ -69,11 +69,6 @@ jobs:
           python -m pip install -r requirements-dev.txt
           python -m pip install -r requirements.txt
 
-      - name: Compile Locale Translations
-        shell: bash
-        run: |
-          python -m scripts.locale --compile
-
       - name: Build
         shell: bash
         env:
