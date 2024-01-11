@@ -4,7 +4,7 @@ LizardByte has the full documentation hosted on `Read the Docs <http://themerr-k
 
 About
 -----
-Themerr-kodi is an add-on for Kodi. The add-on plays theme music while browsing movies in your library.
+Themerr-kodi is an add-on for Kodi. The add-on plays theme music while browsing movies and tv shows in your library.
 
 Integrations
 ------------
