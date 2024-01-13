@@ -95,6 +95,7 @@ class Window:
         self.current_selected_item_id = None
         self.last_selected_item_id = None
         self.uuid_mapping = {}
+        self.last_selected_show_id = None
 
         self._kodi_db_map = {
             'tmdb': 'themoviedb',
@@ -106,6 +107,7 @@ class Window:
             'game_franchises': ['igdb'],
             'movies': ['themoviedb', 'imdb'],
             'movie_collections': ['themoviedb'],
+            'tv_shows': ['themoviedb'],
         }
         self._dbs = (
             'tmdb',
@@ -129,7 +131,7 @@ class Window:
         sleep_time = 50  # 50ms
 
         while not self.monitor.abortRequested():
-            # put timeout_factor within the loop so we can update it if the user changes the setting
+            # put timeout_factor within the loop, so we can update it if the user changes the setting
             timeout_factor = settings.settings.theme_timeout()
             timeout = timeout_factor * (1000 / sleep_time)
 
@@ -137,11 +139,21 @@ class Window:
 
             kodi_id = None
 
-            for db in self._dbs:
-                db_id = xbmc.getInfoLabel(f'ListItem.UniqueID({db})')
-                if db_id:
-                    kodi_id = f"{db}_{db_id}"
-                    break  # break on the first supported db
+            if self.is_seasons() or self.is_episodes():
+                kodi_id = self.last_selected_show_id
+
+            if not kodi_id:
+                for db in self._dbs:
+                    db_id = xbmc.getInfoLabel(f'ListItem.UniqueID({db})')
+                    if db_id:
+                        kodi_id = f"{db}_{db_id}"
+
+                        if self.is_tv_shows():
+                            # TheMovieDB TV Shows addon does not set uniqueID properly for seasons and episodes.
+                            # So we will use the last selected TV show ID instead.
+                            # See: https://github.com/xbmc/metadata.tvshows.themoviedb.org.python/issues/119
+                            self.last_selected_show_id = kodi_id
+                        break  # break on the first supported db
 
             # prefetch the YouTube url (if not already cached or cache is greater than 1 hour)
             if kodi_id and (kodi_id not in list(self.uuid_mapping.keys())
@@ -250,6 +262,12 @@ class Window:
             database_type = 'movies'
         elif self.is_movie_set():
             database_type = 'movie_collections'
+        elif self.is_tv_shows():
+            database_type = 'tv_shows'
+        elif self.is_episodes():
+            database_type = 'tv_shows'
+        elif self.is_seasons():
+            database_type = 'tv_shows'
 
         if database_type:
             youtube_url = self.find_youtube_url(
@@ -284,6 +302,10 @@ class Window:
         """
         split_id = kodi_id.split('_')
         db = self._kodi_db_map[split_id[0]]
+
+        if db_type not in self._supported_dbs.keys() or db not in self._supported_dbs[db_type]:
+            return None
+
         db_id = split_id[1]
 
         self.log.debug(f"{db.upper()}_ID: {db_id}")

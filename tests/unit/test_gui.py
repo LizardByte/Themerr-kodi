@@ -14,7 +14,18 @@ from src.themerr import gui
 @pytest.fixture(
     scope='function',
     params=[
-        'tmdb_10378',
+        # (kodi_id, db_type, condition)
+        ('tmdb_9761', 'movies', 'Container.Content(movies)'),  # Elephants Dream
+        ('tmdb_20529', 'movies', 'Container.Content(movies)'),  # Sita Sings the Blues
+        ('tmdb_10378', 'movies', 'Container.Content(movies)'),  # Big Buck Bunny
+        ('tmdb_45745', 'movies', 'Container.Content(movies)'),  # Sintel
+        ('tmdb_645', 'movie_collections', 'ListItem.IsCollection'),  # James Bond Collection
+        ('tmdb_1399', 'tv_shows', 'Container.Content(tvshows)'),  # Game of Thrones
+        ('tmdb_48866', 'tv_shows', 'Container.Content(tvshows)'),  # The 100
+        ('tmdb_1399', 'tv_shows', 'Container.Content(Seasons)'),  # Game of Thrones
+        ('tmdb_48866', 'tv_shows', 'Container.Content(Seasons)'),  # The 100
+        ('tmdb_1399', 'tv_shows', 'Container.Content(Episodes)'),  # Game of Thrones
+        ('tmdb_48866', 'tv_shows', 'Container.Content(Episodes)'),  # The 100
     ],
 )
 def kodi_id(request):
@@ -77,24 +88,12 @@ def test_pre_checks_all_passing(window_obj):
     assert window_obj.pre_checks() is True
 
 
-def test_process_kodi_id_movies(kodi_id, mock_xbmc_get_cond_visibility, window_obj):
-    condition = 'Container.Content(movies)'
+def test_process_kodi_id(kodi_id, mock_xbmc_get_cond_visibility, window_obj):
+    condition = kodi_id[2]
     env_var = f'_KODI_GET_COND_VISIBILITY_{condition}'
     os.environ[env_var] = '1'
 
-    youtube_url = window_obj.process_kodi_id(kodi_id=kodi_id)
-    assert youtube_url
-
-    del os.environ[env_var]
-
-
-def test_process_kodi_id_movie_collection(mock_xbmc_get_cond_visibility, window_obj):
-    _kodi_id = 'tmdb_645'
-    condition = 'ListItem.IsCollection'
-    env_var = f'_KODI_GET_COND_VISIBILITY_{condition}'
-    os.environ[env_var] = '1'
-
-    youtube_url = window_obj.process_kodi_id(kodi_id=_kodi_id)
+    youtube_url = window_obj.process_kodi_id(kodi_id=kodi_id[0])
     assert youtube_url
 
     del os.environ[env_var]
@@ -102,8 +101,8 @@ def test_process_kodi_id_movie_collection(mock_xbmc_get_cond_visibility, window_
 
 def test_find_youtube_url(kodi_id, window_obj):
     youtube_url = window_obj.find_youtube_url(
-        kodi_id=kodi_id,
-        db_type='movies',
+        kodi_id=kodi_id[0],
+        db_type=kodi_id[1],
     )
 
     assert youtube_url
