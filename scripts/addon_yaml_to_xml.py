@@ -48,18 +48,16 @@ def yaml_to_xml_lxml(yaml_file: str) -> str:
     branch_addons_xml = None
 
     for requirement in data['addon']['requires']['import']:
+        if requirement.get('skip-build'):
+            # requirement is not needed for build
+            continue
         if requirement.get('version'):
             # if the version is specified in yaml, don't look it up
             # this allows pinning a requirement to a specific version
             continue
 
-        requirement_xml = None
-
         if requirement['addon'].startswith('xbmc.'):
             requirement['version'] = xbmc_versions[requirement['addon']][kodi_branch]['advised']
-        elif requirement['addon'].startswith('script.module.'):
-            requirement_xml = os.path.join(
-                os.getcwd(), 'third-party', 'repo-scripts', requirement['addon'], 'addon.xml')
         else:
             if not branch_addons_xml:
                 branch_addons_xml = get_branch_plugins()  # only get the branch addons.xml if we need it
@@ -67,13 +65,20 @@ def yaml_to_xml_lxml(yaml_file: str) -> str:
             # get the requirement version from the branch addons.xml
             addon = branch_addons_xml.xpath(f'//addon[@id="{requirement["addon"]}"]')
             version = addon[0].attrib['version']
-            requirement['version'] = version
+            if version:
+                requirement['version'] = version
+            elif requirement['addon'].startswith('script.module.'):
+                # fallback to the repo-scripts addon.xml
+                requirement_xml = os.path.join(
+                    os.getcwd(), 'third-party', 'repo-scripts', requirement['addon'], 'addon.xml')
 
-        if requirement_xml:
-            # get the version property out of the addon tag
-            with open(requirement_xml, 'r', encoding='utf-8') as file:
-                requirement_data = etree.parse(file)
-                requirement['version'] = requirement_data.getroot().attrib['version']
+                # get the version property out of the addon tag
+                with open(requirement_xml, 'r', encoding='utf-8') as file:
+                    requirement_data = etree.parse(file)
+                    requirement['version'] = requirement_data.getroot().attrib['version']
+
+            if not requirement['version']:
+                raise Exception(f'Failed to get version for {requirement["addon"]}')
 
     # Create XML root
     addon = etree.Element('addon', {
@@ -107,6 +112,9 @@ def yaml_to_xml_lxml(yaml_file: str) -> str:
     # Add requirements
     requires = etree.SubElement(addon, 'requires')
     for imp in data['addon']['requires']['import']:
+        if imp.get('skip-build'):
+            # requirement is not needed for build
+            continue
         etree.SubElement(requires, 'import', {
             'addon': imp['addon'],
             'version': imp['version']
