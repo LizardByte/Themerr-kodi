@@ -41,7 +41,7 @@ class Locale:
         strings = {
             "addon.extension.description": pgettext(
                 "addon.extension.description",
-                "Plugin for Kodi that adds theme songs to movies using ThemerrDB."),
+                "Plugin for Kodi that adds theme songs to movies and tv shows using ThemerrDB."),
             "addon.extension.summary": pgettext(
                 "addon.extension.summary",
                 "Play theme songs while browsing movies"),

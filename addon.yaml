@@ -20,7 +20,7 @@ addon:
         banner: "resources/assets/images/banner.jpg"
       description:
         lang: "en"
-        text: "Plugin for Kodi that adds theme songs to movies using ThemerrDB."
+        text: "Plugin for Kodi that adds theme songs to movies and tv shows using ThemerrDB."
       license: "AGPL-3.0-only"
       platform: "all"
       source: "https://github.com/LizardByte/Themerr-kodi"
