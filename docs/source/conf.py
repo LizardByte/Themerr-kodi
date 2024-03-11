@@ -121,7 +121,7 @@ suppress_warnings = ["epub.unknown_project_files"]
 python_version = f'{sys.version_info.major}.{sys.version_info.minor}'
 
 intersphinx_mapping = {
-    'python': (f'https://docs.python.org/{sys.version_info.major}.{sys.version_info.minor}', None),
+    'python': (f'https://docs.python.org/{python_version}', None),
     'xbmc': ('https://romanvm.github.io/Kodistubs', None),
 }
 
