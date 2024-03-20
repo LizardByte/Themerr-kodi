@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-kodi\n"
 "POT-Creation-Date: 2024-01-14 15:44+0000\n"
-"PO-Revision-Date: 2024-01-19 03:32\n"
+"PO-Revision-Date: 2024-03-10 15:00\n"
 "Last-Translator: \n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: src/themerr/locale.py:42
 msgctxt "addon.extension.description"
 msgid "Plugin for Kodi that adds theme songs to movies and tv shows using ThemerrDB."
-msgstr ""
+msgstr "Plugin for Kodi that adds theme songs to movies and tv shows using ThemerrDB."
 
 #: src/themerr/locale.py:45
 msgctxt "addon.extension.summary"
