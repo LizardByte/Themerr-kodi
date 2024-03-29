@@ -1,7 +1,7 @@
 Babel==2.14.0
 flake8==7.0.0
 furo==2024.1.29
-lxml==5.1.0
+lxml==5.1.1
 m2r2==0.3.3.post2
 numpydoc==1.6.0
 kodi-addon-checker==0.0.31
