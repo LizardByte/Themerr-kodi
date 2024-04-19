@@ -18,14 +18,18 @@ locale_dir = os.path.join(root_dir, 'locale')
 
 # target locales
 target_locales = [
-    'de',  # Deutsch
+    'de',  # German
     'en',  # English
     'en_GB',  # English (United Kingdom)
     'en_US',  # English (United States)
-    'es',  # español
-    'fr',  # français
-    'it',  # italiano
-    'ru',  # русский
+    'es',  # Spanish
+    'fr',  # French
+    'it',  # Italian
+    'ja',  # Japanese
+    'pt',  # Portuguese
+    'ru',  # Russian
+    'sv',  # Swedish
+    'zh',  # Chinese
 ]
 
 
