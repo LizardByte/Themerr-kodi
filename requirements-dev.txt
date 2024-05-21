@@ -9,7 +9,7 @@ Kodistubs==21.0.0  # docs: https://romanvm.github.io/Kodistubs
 pytest==8.2.0
 pytest-cov==5.0.0
 PyYAML==6.0.1
-requests==2.31.0
+requests==2.32.1
 rstcheck==6.2.1
 Sphinx==7.1.2
 sphinx-copybutton==0.5.2
