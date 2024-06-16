@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-kodi\n"
 "POT-Creation-Date: 2024-01-14 15:44+0000\n"
-"PO-Revision-Date: 2024-03-20 18:00\n"
+"PO-Revision-Date: 2024-06-16 00:35\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "浏览电影时播放主题曲"
 #: src/themerr/locale.py:72
 msgctxt "#31001"
 msgid "General"
-msgstr "常规"
+msgstr "A. 概况"
 
 #: src/themerr/locale.py:73
 msgctxt "#31002"
