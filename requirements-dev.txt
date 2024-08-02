@@ -4,7 +4,7 @@ furo==2024.7.18
 lxml==5.2.2
 m2r2==0.3.3.post2
 numpydoc==1.7.0
-kodi-addon-checker==0.0.33
+kodi-addon-checker==0.0.34
 Kodistubs==21.0.0  # docs: https://romanvm.github.io/Kodistubs
 pytest==8.3.2
 pytest-cov==5.0.0
