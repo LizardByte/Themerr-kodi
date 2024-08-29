@@ -38,7 +38,7 @@ except ModuleNotFoundError as e:
 
 # -- Project information -----------------------------------------------------
 project = 'Themerr-kodi'
-project_copyright = f'{datetime.now ().year}, {project}'
+project_copyright = f'{datetime.now().year}, {project}'
 epub_copyright = project_copyright
 author = 'ReenigneArcher'
 
